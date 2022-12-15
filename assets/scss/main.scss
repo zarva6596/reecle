@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    @apply font-primary;
+}
+
+@import "layouts/_layouts";
+@import "components/_components";
+@import "core/_core";

@@ -1,0 +1,22 @@
+.add-new-rows-btn {
+    @apply h-[3.75rem] w-[3.75rem] bg-white/60 rounded-[15px] transition-all duration-500 relative;
+
+    &.open-trash {
+        @apply translate-x-8 opacity-0;
+    }
+
+    &::before,
+    &::after {
+        content: "";
+
+        @apply absolute left-1/2 top-1/2 w-6 h-0.5 bg-gray-1 -translate-x-1/2 -translate-y-1/2;
+    }
+
+    &::after {
+        @apply rotate-90;
+    }
+
+    &:hover {
+        @apply bg-white;
+    }
+}

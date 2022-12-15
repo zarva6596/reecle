@@ -1,0 +1,29 @@
+.mobile-row-actions {
+    @apply fixed left-0 bottom-0 w-screen p-2.5;
+
+    &__wrapper {
+        @apply bg-black/80 rounded-[0.75rem] mb-1 last-of-type:mb-0 px-2.5;
+
+        backdrop-filter: blur(5px);
+    }
+
+    &__action {
+        @apply flex items-center justify-center text-white py-4 border-b border-blackPrimary last-of-type:border-b-0;
+
+        span {
+            @apply text-base font-normal leading-[22px] ml-3;
+        }
+    }
+}
+
+.up-from-bottom-enter-active,
+.up-from-bottom-leave-active {
+    transform-origin: bottom;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.up-from-bottom-enter-from,
+.up-from-bottom-leave-to {
+    opacity: 0;
+    transform: translateY(100%);
+}

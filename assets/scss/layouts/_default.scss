@@ -1,0 +1,7 @@
+.default-layout {
+    @apply flex flex-col justify-between min-h-screen max-w-[100vw] overflow-hidden;
+
+    main {
+        @apply basis-auto grow bg-gray-4 py-3 px-2.5 mt-[3.5rem];
+    }
+}

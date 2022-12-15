@@ -1,0 +1,5 @@
+.audio-list {
+    &__item {
+        @apply mb-1 last-of-type:mb-0;
+    }
+}

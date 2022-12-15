@@ -1,0 +1,24 @@
+.audio-control-btn {
+    @apply h-10 w-10 rounded-[60px] border-[1.5px] border-gray-1 flex items-center justify-center
+        hover:border-blackPrimary transition-all duration-300 overflow-hidden;
+
+    &.record {
+        @apply w-[110px] border-red text-red;
+    }
+
+    &.done {
+        @apply w-[110px] border-gray-1;
+    }
+
+    &.play {
+        @apply w-[110px] border-accent text-accent;
+    }
+
+    & > div {
+        @apply w-full px-2.5 flex items-center justify-between;
+    }
+
+    &__timer {
+        @apply text-xs leading-4 font-medium font-secondary;
+    }
+}

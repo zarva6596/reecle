@@ -1,0 +1,25 @@
+.reecle-modal {
+    @apply fixed h-screen w-screen left-0 top-0 bg-black/50 backdrop-blur-sm;
+
+    &__form {
+        width: calc(100vw - 1.25rem);
+
+        @apply absolute left-1/2 bottom-2.5 -translate-x-1/2 rounded-xl px-[30px] py-[22px] bg-black/80;
+    }
+
+    &__title {
+        @apply text-white text-[22px] leading-[27px] mb-3 font-extrabold;
+    }
+
+    &__description {
+        @apply text-white text-base leading-5 font-normal mb-[30px];
+    }
+
+    &__content {
+
+    }
+
+    &__actions {
+        @apply grid grid-cols-2 gap-5;
+    }
+}

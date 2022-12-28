@@ -1,22 +1,50 @@
-.add-new-rows-btn {
-    @apply h-[3.75rem] w-[3.75rem] bg-white/60 rounded-[15px] transition-all duration-500 relative;
+$button-size: 52px;
+$button-rounded: 0.75rem;
 
-    &.open-trash {
-        @apply translate-x-8 opacity-0;
+.add-new-rows {
+    &__main-btn {
+        @apply h-[3.75rem] w-[3.75rem] bg-white/60 rounded-[15px] transition-all duration-500 relative;
+
+        &.open-trash {
+            @apply translate-x-8 opacity-0 invisible;
+        }
+
+        &::before,
+        &::after {
+            content: "";
+
+            @apply absolute left-1/2 top-1/2 w-6 h-0.5 bg-gray-1 -translate-x-1/2 -translate-y-1/2;
+        }
+
+        &::after {
+            @apply rotate-90;
+        }
+
+        &:hover {
+            @apply bg-white;
+        }
     }
 
-    &::before,
-    &::after {
-        content: "";
+    &__wrapper {
+        @apply fixed w-screen bottom-2.5 left-0 px-2.5 flex justify-between items-center z-50
+            translate-y-full opacity-0 invisible transition-all duration-500;
 
-        @apply absolute left-1/2 top-1/2 w-6 h-0.5 bg-gray-1 -translate-x-1/2 -translate-y-1/2;
+        &.active {
+            @apply translate-y-0 opacity-100 visible;
+        }
     }
 
-    &::after {
-        @apply rotate-90;
+    &__count-btn {
+        @apply w-full h-[#{$button-size}] rounded-[#{$button-rounded}] flex items-center justify-center bg-black/80
+            backdrop-blur-sm text-white text-base leading-[22px] font-normal;
+
+        span {
+            @apply font-bold mx-2;
+        }
     }
 
-    &:hover {
-        @apply bg-white;
+    &__more-btn {
+        @apply h-[#{$button-size}] w-[#{$button-size}] ml-0.5 rounded-[#{$button-rounded}] bg-accent flex items-center
+            justify-center shrink-0 text-white text-base font-normal leading-[22px];
     }
 }

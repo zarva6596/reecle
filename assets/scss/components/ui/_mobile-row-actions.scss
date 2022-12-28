@@ -1,5 +1,5 @@
 .mobile-row-actions {
-    @apply fixed left-0 bottom-0 w-screen p-2.5;
+    @apply fixed left-0 bottom-0 w-screen p-2.5 z-20;
 
     &__wrapper {
         @apply bg-black/80 rounded-[0.75rem] mb-1 last-of-type:mb-0 px-2.5;

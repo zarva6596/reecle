@@ -18,10 +18,16 @@
 
       <div class="single-row__data-col">
         <RowCaption :id="id" />
+
+        <RowComments :add-comment="addCommentActive" />
       </div>
     </div>
 
-    <div class="single-row__comment-marker" :class="showCommentMarker && 'active'">
+    <div
+      class="single-row__comment-marker"
+      :class="showCommentMarker && 'active'"
+      @click="onStartComment"
+    >
       <ReecleeIcon icon="forward" alt="Comment marker arrow" />
       <span>коментувати</span>
     </div>
@@ -30,13 +36,16 @@
       class="single-row__marker"
       :class="{ show: rowsToTrash.length, active: chosenRow }"
       @click="onChooseRow"
-    />
+    >
+      <ReecleeIcon v-if="chosenRow" icon="done-marker" alt="done marker" />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import RowCaption from '~/components/ui/RowCaption.vue';
+import RowComments from '~/components/ui/RowComments.vue';
 import AudioList from '~/components/ui/audio/AudioList.vue';
 import { useRecleeStore } from '~/store/useRecleeStore';
 import { ROW_ELEMENTS } from '~/constants/row';
@@ -46,9 +55,13 @@ const { activeRowId, rowsToTrash } = storeToRefs(useRecleeStore());
 
 interface Props {
   id: string
+  moveRowId: string | null | unknown
 }
 
 const props = defineProps<Props>();
+const emit = defineEmits<{(e: 'start-move', data: string): void }>();
+
+watch(() => props.moveRowId, val => (props.id !== val) && onRowToDefault());
 
 const row = useRecleeStore().getRow(props.id);
 const chosenRow = computed<boolean>(() => rowsToTrash.value.includes(props.id));
@@ -71,8 +84,9 @@ const onEnterRow = (e: Event) => {
     return elements.some(el => el.contains(target));
   });
 
-  if ((!contains && !rowsToTrash.value.length) || activeRowId.value) {
+  if ((!contains && !rowsToTrash.value.length && !addCommentActive.value) || activeRowId.value) {
     activeRowId.value = activeRowId.value ? null : props.id;
+    onRowToDefault();
   }
 };
 
@@ -98,15 +112,16 @@ const touchStartTimeStamp = ref<number>();
 const touchEndTimeStamp = ref<number>();
 const moveStartX = ref<number>();
 const moveEndX = ref<number | null>();
-const showCommentMarker = computed<boolean>(() => !!(moveEndX.value && Math.abs(moveEndX.value) > 120));
+const showCommentMarker = computed<boolean>(() => (moveEndX.value ? Math.abs(moveEndX.value) > 120 : false));
 
 const onLongTouch = () => (rowsToTrash.value.push(props.id));
-const startTouch = (e: TouchEvent) => {
+const onStartTouch = (e: TouchEvent) => {
+  emit('start-move', props.id);
   touchStartTimeStamp.value = e.timeStamp;
   moveStartX.value = e.touches[0].clientX;
 };
 
-const endTouch = (e: TouchEvent) => {
+const onEndTouch = (e: TouchEvent) => {
   touchEndTimeStamp.value = e.timeStamp;
 
   if (touchStartTimeStamp.value) {
@@ -117,17 +132,38 @@ const endTouch = (e: TouchEvent) => {
       !moveEndX.value && onLongTouch();
     }
 
-    if (moveEndX.value && Math.abs(moveEndX.value) < 124 && rowRef.value) {
-      moveEndX.value = null;
-      rowRef.value.style.transform = '';
-    }
+    (moveEndX.value && Math.abs(moveEndX.value) < 124) && onRowToDefault();
+  }
+};
+
+const onRowToDefault = () => {
+  moveEndX.value = null;
+  rowRef.value && (rowRef.value.style.transform = '');
+  addComment.value && (addComment.value = false);
+};
+
+const addComment = ref(false);
+const addCommentActive = computed<boolean>(() => addComment.value && props.moveRowId === props.id);
+
+const onStartComment = () => {
+  onRowToDefault();
+  setTimeout(() => (addComment.value = true), 100);
+};
+
+const clickOutside = () => onRowToDefault();
+
+const onCheckClick = (e: Event) => {
+  if (e.target instanceof HTMLElement && rowRef.value) {
+    !rowRef.value.contains(e.target) && clickOutside();
   }
 };
 
 onMounted(() => nextTick(() => rowRef.value && rowRef.value.addEventListener('touchmove', moveRow)));
-onMounted(() => nextTick(() => rowRef.value && rowRef.value.addEventListener('touchstart', startTouch)));
-onMounted(() => nextTick(() => rowRef.value && rowRef.value.addEventListener('touchend', endTouch)));
+onMounted(() => nextTick(() => rowRef.value && rowRef.value.addEventListener('touchstart', onStartTouch)));
+onMounted(() => nextTick(() => rowRef.value && rowRef.value.addEventListener('touchend', onEndTouch)));
+onMounted(() => document.addEventListener('click', onCheckClick));
 onUnmounted(() => rowRef.value && rowRef.value.removeEventListener('touchmove', moveRow));
-onUnmounted(() => rowRef.value && rowRef.value.removeEventListener('touchstart', startTouch));
-onUnmounted(() => rowRef.value && rowRef.value.removeEventListener('touchend', endTouch));
+onUnmounted(() => rowRef.value && rowRef.value.removeEventListener('touchstart', onStartTouch));
+onUnmounted(() => rowRef.value && rowRef.value.removeEventListener('touchend', onEndTouch));
+onUnmounted(() => document.removeEventListener('click', onCheckClick));
 </script>

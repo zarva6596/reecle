@@ -1,5 +1,5 @@
 .header {
-    @apply pt-[15px] pb-[17px] px-5 flex items-center justify-between fixed top-0 left-0 w-screen z-10 bg-white;
+    @apply pt-[15px] pb-[17px] px-5 flex items-center justify-between fixed top-0 left-0 w-screen z-20 bg-white;
 
     &__title {
         @apply text-lg leading-6 font-semibold text-blackPrimary max-w-[270px] text-ellipsis overflow-hidden

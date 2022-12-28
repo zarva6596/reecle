@@ -1,6 +1,12 @@
 <template>
   <div>
-    <SingleRow v-for="row in rows" :id="row.id" :key="row.id" />
+    <SingleRow
+      v-for="row in rows"
+      :id="row.id"
+      :key="row.id"
+      :move-row-id="movingRowId"
+      @start-move="onStartMoveRow"
+    />
 
     <AddNewRowsBtn />
 
@@ -32,12 +38,10 @@ const closeMobileRowActions = (e: Event) => {
   }
 };
 
-onMounted(() => {
-  if (!rows.value.length) {
-    recleeStore.addNewRows();
-  }
-});
+const movingRowId = ref<string | null>(null);
+const onStartMoveRow = (id: string | null) => (movingRowId.value = id);
 
+onMounted(() => !rows.value.length && recleeStore.addNewRows());
 onMounted(() => window.addEventListener('click', closeMobileRowActions));
 onUnmounted(() => window.removeEventListener('click', closeMobileRowActions));
 </script>

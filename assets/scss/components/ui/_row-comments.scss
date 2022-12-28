@@ -1,0 +1,17 @@
+.row-comments {
+    &__add-buttons {
+        @apply overflow-hidden h-0 opacity-0 invisible flex items-center transition-all duration-500;
+
+        &.active {
+            @apply h-5 opacity-100 visible mt-2.5;
+        }
+    }
+
+    &__add-button {
+        @apply flex items-center justify-center h-5 px-2 mr-1.5 bg-accent rounded-[30px];
+
+        span {
+            @apply ml-1 text-[10px] font-normal leading-[14px] text-white;
+        }
+    }
+}

@@ -3,7 +3,7 @@
         text-white text-base font-normal leading-[1.375rem] translate-y-full transition-all duration-500;
 
     &.active {
-        @apply translate-y-0;
+        @apply translate-y-0 z-20;
     }
 
     &__close {

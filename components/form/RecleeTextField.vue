@@ -11,9 +11,11 @@
       :placeholder="placeholder"
       :class="!data?.length && 'empty'"
       @keypress="removeEnter"
+      @focusout="onEndType"
       @input="changeData"
     />
     <div
+      ref="textFieldRef"
       class="reclee-text-field__text"
     >
       <p :class="{ hidden: !data?.length, 'not-empty': data?.length }">
@@ -33,7 +35,7 @@ interface Props {
 
 defineProps<Props>();
 
-const emit = defineEmits<{(e: 'update:modelValue', value: string):void }>();
+const emit = defineEmits<{(e: 'update:modelValue', value: string):void, (e: 'leaveEmptyField'): void }>();
 
 const data = ref('');
 
@@ -44,5 +46,11 @@ const changeData = (e: KeyboardEvent) => {
     data.value = target.value;
     emit('update:modelValue', target.value);
   }
+};
+
+const onEndType = (e: Event) => {
+  const target = e.target as HTMLInputElement;
+
+  !target?.value && emit('leaveEmptyField');
 };
 </script>

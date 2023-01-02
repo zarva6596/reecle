@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { Row, TextComment } from '~/types/row';
+import { ROW_COMMENTS_TYPE } from '~/constants/row';
 
 export const useRecleeStore = defineStore('useRecleeStore', () => {
   const rows = ref<Row[]>([]);
@@ -30,32 +31,18 @@ export const useRecleeStore = defineStore('useRecleeStore', () => {
   const addTextComment = (rowId: string) => {
     const editorRow = getRow(rowId).value;
     const id = random();
-    const comment = { id, value: '' } as TextComment;
+    const comment = { id, value: '', type: ROW_COMMENTS_TYPE.TEXT } as TextComment;
 
     if (editorRow) {
-      editorRow.textComments?.length ? editorRow.textComments.push(comment) : (editorRow.textComments = [comment]);
+      editorRow.comments?.length ? editorRow.comments.push(comment) : (editorRow.comments = [comment]);
     }
   };
 
   const removeTextComment = (rowId: string, commentId: string) => {
     const editorRow = getRow(rowId).value;
 
-    if (editorRow?.textComments) {
-      editorRow.textComments = editorRow.textComments.filter(comment => comment.id !== commentId);
-    }
-  };
-
-  const editTextComment = (rowId: string, commentId: string, value: string) => {
-    const editorRow = getRow(rowId).value;
-
-    if (editorRow?.textComments) {
-      if (value.length) {
-        const editorComment = editorRow.textComments.find(comment => comment.id === commentId);
-
-        editorComment && (editorComment.value = value);
-      } else {
-        removeTextComment(rowId, commentId);
-      }
+    if (editorRow?.comments) {
+      editorRow.comments = editorRow.comments.filter(comment => comment.id !== commentId);
     }
   };
 
@@ -68,7 +55,6 @@ export const useRecleeStore = defineStore('useRecleeStore', () => {
     rowsToTrash,
     removeRows,
     addTextComment,
-    editTextComment,
     removeTextComment,
   };
 });

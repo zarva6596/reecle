@@ -3,3 +3,8 @@ export const ROW_ELEMENTS = {
   ROW_CAPTION: 'row-caption',
   ROW_COMMENTS: 'row-comments',
 };
+
+export const ROW_COMMENTS_TYPE = {
+  AUDIO: 'audio',
+  TEXT: 'text',
+};

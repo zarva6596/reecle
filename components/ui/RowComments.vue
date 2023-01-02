@@ -1,14 +1,23 @@
 <template>
   <div :class="ROW_ELEMENTS.ROW_COMMENTS">
-    <div v-if="row?.textComments?.length" class="row-comments__text-list">
-      <RecleeTextField
-        v-for="comment in row.textComments"
-        :id="comment.id"
+    <div v-if="row?.comments?.length" class="row-comments__list">
+      <template
+        v-for="comment in row.comments"
         :key="comment.id"
-        v-model="comment.value"
-        class="row-comments__text-comment"
-      />
+      >
+        <RecleeTextField
+          v-if="comment.type === ROW_COMMENTS_TYPE.TEXT"
+          :id="comment.id"
+          v-model="comment.value"
+          class="row-comments__text-comment"
+          @leave-empty-field="removeTextComment(rowId, comment.id)"
+        />
+        <div v-else-if="comment.type === ROW_COMMENTS_TYPE.AUDIO">
+          Audion Comment
+        </div>
+      </template>
     </div>
+
     <div class="row-comments__add-buttons" :class="addComment && 'active'">
       <div class="row-comments__add-button" @click="onStartCreateTextComment">
         <ReecleeIcon icon="text-comment-btn" alt="text comment icon" />
@@ -23,13 +32,13 @@
 </template>
 
 <script setup lang="ts">
-import { ROW_ELEMENTS } from '~/constants/row';
+import { ROW_COMMENTS_TYPE, ROW_ELEMENTS } from '~/constants/row';
 import ReecleeIcon from '~/components/universal/ReecleeIcon.vue';
 import RecleeTextField from '~/components/form/RecleeTextField.vue';
 import { useRecleeStore } from '~/store/useRecleeStore';
 import { Row, TextComment } from '~/types/row';
 
-const { getRow, addTextComment } = useRecleeStore();
+const { getRow, addTextComment, removeTextComment } = useRecleeStore();
 
 interface Props {
   rowId: string
@@ -46,8 +55,8 @@ const onStartCreateTextComment = () => {
   addTextComment(props.rowId);
   emit('update:modelValue', false);
 
-  if (row?.textComments?.length) {
-    const newComment = row.textComments.at(-1) as TextComment;
+  if (row?.comments?.length) {
+    const newComment = row.comments.at(-1) as TextComment;
 
     nextTick(() => {
       const newCommentEl = document.getElementById(newComment.id) as HTMLElement;

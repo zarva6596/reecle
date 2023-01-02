@@ -14,6 +14,9 @@ export const stopStringLength = (l: number, e: Event) => {
 
 export const removeEnter = (e: KeyboardEvent) => {
   if (e.keyCode === 13) {
+    const target = e.target as HTMLElement;
+
+    target && target.blur();
     e.preventDefault();
   }
   stopStringLength(25, e);

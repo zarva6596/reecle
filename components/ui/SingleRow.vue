@@ -5,19 +5,24 @@
       ref="rowRef"
       class="single-row__row"
       :class="{
-        'items-center': ((!captionHeight <= 25) && row.audioRecords?.length === 1),
+        'items-center': ((captionHeight <= 26) && row.audioRecords?.length === 1),
         active: activeRowId === id,
         'not-active': activeRowId && activeRowId !== id,
         'open-trash': rowsToTrash.length
       }"
       @click="onEnterRow"
+      @touchmove="moveRow"
+      @touchstart="onStartTouch"
+      @touchend="onEndTouch"
     >
       <div class="single-row__audio-col">
         <AudioList :id="id" />
       </div>
 
       <div class="single-row__data-col">
-        <RowCaption :id="id" ref="rowCaption" />
+        <div ref="rowCaption">
+          <RowCaption :id="id" />
+        </div>
 
         <RowComments v-model="addComment" :add-comment="addCommentActive" :row-id="id" />
       </div>
@@ -135,8 +140,16 @@ const onEndTouch = (e: TouchEvent) => {
   if (touchStartTimeStamp.value) {
     const timestamp = touchEndTimeStamp.value - touchStartTimeStamp.value;
 
-    if (timestamp > 300) {
+    if (timestamp > 300 && rowRef.value) {
       e.preventDefault();
+
+      const comment = rowRef.value.querySelector(`.${ROW_ELEMENTS.ROW_COMMENTS}`);
+      const target = e.target as HTMLElement;
+
+      if (comment?.contains(target)) {
+        return;
+      }
+
       !moveEndX.value && onLongTouch();
     }
 
@@ -160,31 +173,10 @@ const onStartComment = () => {
 
 const clickOutside = () => onRowToDefault();
 
-const onCheckClick = (e: Event) => {
-  if (e.target instanceof HTMLElement && rowRef.value) {
-    !rowRef.value.contains(e.target) && clickOutside();
-  }
-};
+const onCheckClick = (e: Event) =>
+  (e.target instanceof HTMLElement && rowRef.value && !rowRef.value.contains(e.target))
+    && clickOutside();
 
-onMounted(() => nextTick(() => {
-  const singleRow = rowRef.value;
-
-  if (singleRow) {
-    singleRow.addEventListener('touchmove', moveRow);
-    singleRow.addEventListener('touchstart', onStartTouch);
-    singleRow.addEventListener('touchend', onEndTouch);
-  }
-  document.addEventListener('click', onCheckClick);
-}));
-
-onUnmounted(() => {
-  const singleRow = rowRef.value;
-
-  if (singleRow) {
-    singleRow.removeEventListener('touchmove', moveRow);
-    singleRow.removeEventListener('touchstart', onStartTouch);
-    singleRow.removeEventListener('touchend', onEndTouch);
-  }
-  document.removeEventListener('click', onCheckClick);
-});
+onMounted(() => nextTick(() => document.addEventListener('click', onCheckClick)));
+onUnmounted(() => document.removeEventListener('click', onCheckClick));
 </script>

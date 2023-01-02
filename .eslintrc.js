@@ -19,6 +19,7 @@ module.exports = {
     'no-unused-vars': 'off',
     'vue/require-v-for-key': 2,
     'object-curly-spacing': ['error', 'always'],
+    'func-call-spacing': 'off',
     'max-len': ['error', {
       code: 140,
       comments: 140,

@@ -18,7 +18,7 @@ export interface AudioComment {
 export interface Row {
     id: string
     caption?: string
-    comments?: (TextComment | AudioComment)[]
+    comments: (TextComment | AudioComment)[]
     audioRecords?: AudioRecord[]
 }
 

@@ -2,10 +2,8 @@
     @apply relative;
 
     textarea {
-        resize: none;
-
         @apply bg-transparent absolute h-full w-full placeholder:whitespace-nowrap overflow-hidden
-            cursor-pointer transition-all duration-500;
+            cursor-pointer transition-all duration-500 resize-none;
 
         &:hover,
         &:focus {
@@ -16,5 +14,9 @@
     &__text {
         @apply overflow-hidden transition-all duration-500 flex items-center
             text-transparent;
+
+        p {
+            @apply pointer-events-auto;
+        }
     }
 }

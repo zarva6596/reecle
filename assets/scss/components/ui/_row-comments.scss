@@ -1,6 +1,9 @@
 .row-comments {
+    @apply pointer-events-none;
+
     &__add-buttons {
-        @apply overflow-hidden h-0 opacity-0 invisible flex items-center transition-all duration-500;
+        @apply overflow-hidden h-0 opacity-0 invisible flex items-center transition-all duration-500
+            pointer-events-auto;
 
         &.active {
             @apply h-5 opacity-100 visible mt-2.5;

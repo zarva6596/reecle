@@ -7,6 +7,7 @@
     }"
   >
     <textarea
+      ref="textarea"
       :value="data"
       :placeholder="placeholder"
       :class="!data?.length && 'empty'"
@@ -18,7 +19,7 @@
       ref="textFieldRef"
       class="reclee-text-field__text"
     >
-      <p :class="{ hidden: !data?.length, 'not-empty': data?.length }">
+      <p :class="{ hidden: !data?.length, 'not-empty': data?.length }" @click="textarea.focus()">
         {{ data }}
       </p>
     </div>
@@ -30,12 +31,18 @@ import { removeEnter } from '~/utils';
 
 interface Props {
   placeholder?: string
-  modelValue: string
+  modelValue?: string
 }
 
 defineProps<Props>();
 
-const emit = defineEmits<{(e: 'update:modelValue', value: string):void, (e: 'leaveEmptyField'): void }>();
+const textarea = ref<HTMLInputElement>();
+
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: string):void,
+  (e: 'leaveEmptyField'): void,
+  (e: 'change', value: string): void
+}>();
 
 const data = ref('');
 
@@ -45,6 +52,7 @@ const changeData = (e: KeyboardEvent) => {
   if (target) {
     data.value = target.value;
     emit('update:modelValue', target.value);
+    emit('change', target.value);
   }
 };
 

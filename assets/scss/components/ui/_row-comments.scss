@@ -14,4 +14,34 @@
             @apply ml-1 text-[10px] font-normal leading-[14px] text-white;
         }
     }
+
+    &__text-comment {
+        @apply mb-[3px] last-of-type:mb-0;
+
+        &.reclee-text-field p,
+        textarea {
+            @apply text-[10px] font-normal leading-[14px] text-blackSecondary min-h-[16px] rounded-[10px] px-2
+                bg-gray-3 pt-[1px];
+
+            &:focus.empty {
+                @apply min-h-[20px] w-[30px] pt-0.5 px-3.5;
+            }
+
+            &.empty {
+                @apply w-[30px];
+            }
+
+            &:focus {
+                @apply bg-accent text-white;
+            }
+        }
+
+        &.reclee-text-field p {
+            @apply w-[30px] min-h-[16px] overflow-hidden transition-all duration-500 flex items-center text-transparent;
+
+            &.not-empty {
+                @apply w-fit h-fit;
+            }
+        }
+    }
 }

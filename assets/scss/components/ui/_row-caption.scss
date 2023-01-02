@@ -1,29 +1,20 @@
 .row-caption {
-    @apply text-base font-normal leading-5 text-blackPrimary relative;
-
+    .reclee-text-field p,
     textarea {
-        resize: none;
-
-        @apply bg-transparent absolute h-full w-full text-lg font-normal leading-6 text-blackPrimary
-            placeholder:whitespace-nowrap min-h-[25px] min-w-[100px] overflow-hidden cursor-pointer
+        @apply text-lg font-normal leading-6 text-blackPrimary placeholder:whitespace-nowrap min-h-[25px]
             placeholder:text-lg placeholder:leading-6 placeholder:font-normal placeholder:text-gray-1;
 
-        &:hover,
-        &:focus {
-            outline: 0 none transparent;
-        }
-
-        &.empty:focus {
+        &:focus.empty {
             @apply border border-[0.5px] border-accent bg-sail text-poloBlue;
         }
     }
 
-    &__caption {
-        @apply min-w-[101px] min-h-[25px] overflow-hidden text-lg font-normal leading-6
+    .reclee-text-field p {
+        @apply min-w-[101px] min-h-[25px] overflow-hidden
             transition-all duration-500 flex items-center text-transparent;
 
         &.not-empty {
-            @apply min-w-[101px] w-fit h-fit;
+            @apply w-fit h-fit;
         }
     }
 }

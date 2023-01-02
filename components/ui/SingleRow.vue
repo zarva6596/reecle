@@ -5,7 +5,7 @@
       ref="rowRef"
       class="single-row__row"
       :class="{
-        'items-center': ((!row.captionHeight || row.captionHeight <= 25) && row.audioRecords?.length === 1),
+        'items-center': ((!captionHeight <= 25) && row.audioRecords?.length === 1),
         active: activeRowId === id,
         'not-active': activeRowId && activeRowId !== id,
         'open-trash': rowsToTrash.length
@@ -17,9 +17,9 @@
       </div>
 
       <div class="single-row__data-col">
-        <RowCaption :id="id" />
+        <RowCaption :id="id" ref="rowCaption" />
 
-        <RowComments :add-comment="addCommentActive" />
+        <RowComments v-model="addComment" :add-comment="addCommentActive" :row-id="id" />
       </div>
     </div>
 
@@ -61,9 +61,15 @@ interface Props {
 const props = defineProps<Props>();
 const emit = defineEmits<{(e: 'start-move', data: string): void }>();
 
+const rowCaption = ref<HTMLElement>();
+const captionHeight = ref<number>(0);
+
 watch(() => props.moveRowId, val => (props.id !== val) && onRowToDefault());
 
 const row = useRecleeStore().getRow(props.id);
+
+watch(() => row.value?.caption, () => rowCaption.value && (captionHeight.value = rowCaption.value.clientHeight));
+
 const chosenRow = computed<boolean>(() => rowsToTrash.value.includes(props.id));
 
 const onChooseRow = () => {
@@ -93,7 +99,9 @@ const onEnterRow = (e: Event) => {
 const rowRef = ref<HTMLElement>();
 
 const moveRow = (e: TouchEvent) => {
-  e.preventDefault();
+  if (activeRowId.value) {
+    return;
+  }
 
   const x = e.touches[0].clientX;
 
@@ -114,7 +122,7 @@ const moveStartX = ref<number>();
 const moveEndX = ref<number | null>();
 const showCommentMarker = computed<boolean>(() => (moveEndX.value ? Math.abs(moveEndX.value) > 120 : false));
 
-const onLongTouch = () => (rowsToTrash.value.push(props.id));
+const onLongTouch = () => (!activeRowId.value && rowsToTrash.value.push(props.id));
 const onStartTouch = (e: TouchEvent) => {
   emit('start-move', props.id);
   touchStartTimeStamp.value = e.timeStamp;
@@ -158,12 +166,25 @@ const onCheckClick = (e: Event) => {
   }
 };
 
-onMounted(() => nextTick(() => rowRef.value && rowRef.value.addEventListener('touchmove', moveRow)));
-onMounted(() => nextTick(() => rowRef.value && rowRef.value.addEventListener('touchstart', onStartTouch)));
-onMounted(() => nextTick(() => rowRef.value && rowRef.value.addEventListener('touchend', onEndTouch)));
-onMounted(() => document.addEventListener('click', onCheckClick));
-onUnmounted(() => rowRef.value && rowRef.value.removeEventListener('touchmove', moveRow));
-onUnmounted(() => rowRef.value && rowRef.value.removeEventListener('touchstart', onStartTouch));
-onUnmounted(() => rowRef.value && rowRef.value.removeEventListener('touchend', onEndTouch));
-onUnmounted(() => document.removeEventListener('click', onCheckClick));
+onMounted(() => nextTick(() => {
+  const singleRow = rowRef.value;
+
+  if (singleRow) {
+    singleRow.addEventListener('touchmove', moveRow);
+    singleRow.addEventListener('touchstart', onStartTouch);
+    singleRow.addEventListener('touchend', onEndTouch);
+  }
+  document.addEventListener('click', onCheckClick);
+}));
+
+onUnmounted(() => {
+  const singleRow = rowRef.value;
+
+  if (singleRow) {
+    singleRow.removeEventListener('touchmove', moveRow);
+    singleRow.removeEventListener('touchstart', onStartTouch);
+    singleRow.removeEventListener('touchend', onEndTouch);
+  }
+  document.removeEventListener('click', onCheckClick);
+});
 </script>

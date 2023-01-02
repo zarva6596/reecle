@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import { ButtonTypes } from '~/constants/button';
-import ReecleButton from '~/components/form/ReecleButton.vue';
+import ReecleButton from '~/components/form/RecleeButton.vue';
 
 interface Button {
   title: string

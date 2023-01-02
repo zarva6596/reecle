@@ -4,6 +4,7 @@ export interface AudioRecord {
 
 export interface TextComment {
     id: string
+    value: string
 }
 
 export interface AudioComment {
@@ -13,7 +14,6 @@ export interface AudioComment {
 export interface Row {
     id: string
     caption?: string
-    captionHeight?: number
     textComments?: TextComment[]
     audioComments?: AudioComment[]
     audioRecords?: AudioRecord[]

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { Row } from '~/types/row';
+import { Row, TextComment } from '~/types/row';
 
 export const useRecleeStore = defineStore('useRecleeStore', () => {
   const rows = ref<Row[]>([]);
@@ -16,8 +16,8 @@ export const useRecleeStore = defineStore('useRecleeStore', () => {
 
   const getRow = (id: string) => computed<Row | undefined>(() => rows.value.find(item => item.id === id));
 
-  const changeCaption = (id: string, val: string, height: number) => {
-    rows.value = rows.value.map(item => item.id === id ? { ...item, caption: val, captionHeight: height } : item);
+  const changeCaption = (id: string, val: string) => {
+    rows.value = rows.value.map(item => item.id === id ? { ...item, caption: val } : item);
   };
 
   const rowsToTrash = ref<string[]>([]);
@@ -25,6 +25,38 @@ export const useRecleeStore = defineStore('useRecleeStore', () => {
   const removeRows = () => {
     rows.value = rows.value.filter(rowItem => !rowsToTrash.value.includes(rowItem.id));
     rowsToTrash.value = [];
+  };
+
+  const addTextComment = (rowId: string) => {
+    const editorRow = getRow(rowId).value;
+    const id = random();
+    const comment = { id, value: '' } as TextComment;
+
+    if (editorRow) {
+      editorRow.textComments?.length ? editorRow.textComments.push(comment) : (editorRow.textComments = [comment]);
+    }
+  };
+
+  const removeTextComment = (rowId: string, commentId: string) => {
+    const editorRow = getRow(rowId).value;
+
+    if (editorRow?.textComments) {
+      editorRow.textComments = editorRow.textComments.filter(comment => comment.id !== commentId);
+    }
+  };
+
+  const editTextComment = (rowId: string, commentId: string, value: string) => {
+    const editorRow = getRow(rowId).value;
+
+    if (editorRow?.textComments) {
+      if (value.length) {
+        const editorComment = editorRow.textComments.find(comment => comment.id === commentId);
+
+        editorComment && (editorComment.value = value);
+      } else {
+        removeTextComment(rowId, commentId);
+      }
+    }
   };
 
   return {
@@ -35,5 +67,8 @@ export const useRecleeStore = defineStore('useRecleeStore', () => {
     activeRowId,
     rowsToTrash,
     removeRows,
+    addTextComment,
+    editTextComment,
+    removeTextComment,
   };
 });

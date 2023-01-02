@@ -36,7 +36,8 @@ import { ROW_COMMENTS_TYPE, ROW_ELEMENTS } from '~/constants/row';
 import ReecleeIcon from '~/components/universal/ReecleeIcon.vue';
 import RecleeTextField from '~/components/form/RecleeTextField.vue';
 import { useRecleeStore } from '~/store/useRecleeStore';
-import { Row, TextComment } from '~/types/row';
+import { Row } from '~/types/row';
+import { focusNewComment } from '#imports';
 
 const { getRow, addTextComment, removeTextComment } = useRecleeStore();
 
@@ -55,15 +56,6 @@ const onStartCreateTextComment = () => {
   addTextComment(props.rowId);
   emit('update:modelValue', false);
 
-  if (row?.comments?.length) {
-    const newComment = row.comments.at(-1) as TextComment;
-
-    nextTick(() => {
-      const newCommentEl = document.getElementById(newComment.id) as HTMLElement;
-      const textarea = newCommentEl.querySelector('textarea') as HTMLElement;
-
-      textarea.focus();
-    });
-  }
+  focusNewComment(props.rowId);
 };
 </script>

@@ -16,6 +16,9 @@ import { storeToRefs } from 'pinia';
 import { MobileRowAction, MobileRowActionMethod } from '~/types/row';
 import { useRecleeStore } from '~/store/useRecleeStore';
 import Icon from '~/components/universal/ReecleeIcon.vue';
+import { focusNewComment } from '#imports';
+
+const { addTextComment } = useRecleeStore();
 
 const { activeRowId, rowsToTrash } = storeToRefs(useRecleeStore());
 
@@ -29,8 +32,10 @@ const rowActions = ref<Record<string, MobileRowActionMethod>>({
     console.log('DELETE AUDIO');
   },
   addTextComment: () => {
-    // eslint-disable-next-line no-console
-    console.log('ADD TEXT COMMENT');
+    if (activeRowId.value) {
+      addTextComment(activeRowId.value);
+      focusNewComment(activeRowId.value);
+    }
   },
   addAudioComment: () => {
     // eslint-disable-next-line no-console
